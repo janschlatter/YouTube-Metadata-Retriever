@@ -6,42 +6,49 @@
 	<title>Youtube: Get all vids of a youtube user, channel or playlist</title>
 	<script src="lib/jquery.min.v1.10.2.js"></script>
 	<script src="lib/papaparse.min.js"></script> <!-- from https://papaparse.com -->
-	<style>
-		body, textarea {
-			font-family: "Open Sans","Arial";
-			line-height: 1.5em;
-		}
-		textarea {
-			font-family: "monospace";
-			font-size: 8pt;
-			white-space: pre;
-			overflow-wrap: normal;
-			overflow-x: scroll;
-		}
-	</style>
+	<link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<h2>Get all vids of a youtube user, channel or playlist</h2>
 
-<small>Disclaimers: The file saving features on this page work well with Chrome/Chromium browser; not so much with other browsers. One user has complained that it doesn't work on Firefox. So, please use this tool on Chrome/Chromium browser and feel free to code and contribute fixes.<br>The functions running on this page are mostly recursive asynchronous calls : one function calling itself for the next iteration after a valid response is received. Hence, with larger numbers of videos, give it time. </small>
+<div class="starter">
+	<div class="title">
+		<h1>YouTube Metriken2go</h1>
+	</div>
+	<div class="inputs">
+		<div class="inputbox">
+			<p>API</p><input id="accesskey" type="text" size="50" value="AIzaSyAGCQow6C8n2NHtzCrTgyhO2nNJBIm0Xwc"> | <small><a target="_blank" href="https://developers.google.com/youtube/v3/getting-started" title="What, you thought I'll let you use mine? :)">Click here to get your Access Key</a></small><br>
+		</div>
+		<div class="inputbox">
+			<p>Ziel</p><input id="playlistId" type="text" size="40" value="UUT7EcU7rC44DiS3RkfZzZMg"><a target="_blank" href="https://developers.google.com/apis-explorer/#p/youtube/v3/youtube.channels.list?part=contentDetails&forUsername=arvindguptatoys&fields=items%252FcontentDetails%252CpageInfo%252FtotalResults">Click here to find playlist Id (requires username or channel id)</a></small><br>
+		</div>
+	</div>
+	<div class="inputs">
+		<div class="inputbox">
+			<p>Anzahl Videos</p><input id="vidslimit" type="text" value="200" size="5">
+			<a target="_blank" href="javascript:findTotalVids()">Gesamtanzahl Videos herausfinden</a>
+		</div>
+		<div class="inputbox">
+			<p>Startpaginierung</p><input id="startToken" type="text" value="" size="40"><p></p>
+		</div>
+	</div>
+	<div class="go">
+		<input id="search-btn" type="button" value="Datenabfrage starten">
+	</div>
+</div>
 
-<h3>1. Enter inputs</h3>
-<p>
-Your Youtube API Access Key: <input id="accesskey" type="text" size="50" value="AIzaSyAGCQow6C8n2NHtzCrTgyhO2nNJBIm0Xwc"> | <small><a target="_blank" href="https://developers.google.com/youtube/v3/getting-started" title="What, you thought I'll let you use mine? :)">Click here to get your Access Key</a></small><br>
+<div class="section-odd">
+	<div class="progress">
+		<h2>Verarbeitung</h2>
+		<p><textarea id="output" rows="16" cols="100"></textarea>
+			<div class="inputbox uncool">
+				<button onclick='download_file("vidsListing.csv", "output")'>Herunterladen</button></p>
+				</div>
+				<div class="inputbox">
+				<button onclick='download_file("vidsListing.csv", "output")'>Erweiterte Daten abrufen</button></p>
+			</div>
+	</div>
+</div>
 
-Uploads Playlist Id: <input id="playlistId" type="text" size="40" value="UUT7EcU7rC44DiS3RkfZzZMg"> | <small><a target="_blank" href="https://developers.google.com/apis-explorer/#p/youtube/v3/youtube.channels.list?part=contentDetails&forUsername=arvindguptatoys&fields=items%252FcontentDetails%252CpageInfo%252FtotalResults" title="yes, even all the videos on a channel are in a playlist called 'uploads'">Click here to find playlist Id (requires username or channel id)</a></small><br>
-
-Number of videos to fetch: <input id="vidslimit" type="text" value="200" size="10"> | <small>will start from latest</small> | 
-<small><a target="_blank" href="javascript:findTotalVids()">Click here to calculate the total number of videos (requires the playlist id)</a></small>
-
-<p><small>Page Token to start from, if any: <input id="startToken" type="text" value="" size="10"> | In case you want to pick up where you left off and not have to cycle through the ones already covered</small></p>
-
-<hr>
-<h3>2. Basic Listing</h3>
-<p><button id="search-btn">Click here to Fetch Videos Listing</button></p>
-</p><p>Output: (in CSV format, copy-paste to a spreadsheet) </p>
-<p><textarea id="output" rows="16" cols="100"></textarea>
-<button onclick='download_file("vidsListing.csv", "output")'>Download CSV</button></p>
 
 <hr>
 <h3>3. Full vids info</h3>
@@ -59,7 +66,8 @@ Number of videos to fetch: <input id="vidslimit" type="text" value="200" size="1
 <small>If you want more details of each video, like views, counts, description</small>
 <p><button onclick='download_file("vidsData.json", "json")'>Download JSON</button>
 	| <button onclick='download_file("vidsData.csv", "csv")'>Download CSV</button>
-	| <button onclick='download_file("fulljson.json", "fulljson")'>Download Full JSON data from API</button></p>
+	| <button onclick='download_file("fulljson.json", "fulljson")'>Download Full JSON data from API</button>
+	| <button onclick='download_file("fullcsv.csv", "fullcsv")'>Full JSON as Excel</button></p>
 <p><small>Note: The description is escaped to HTML chars using encodeURI() function, to accommodate multiple-lines. Please use decodeURI() to decode it</small></p>
 
 <hr>
@@ -73,8 +81,17 @@ var accumulator = [];
 var tokensList = [];
 var accumulatorFull = [];
 
+
 // When the Basic Listing button is pressed
 $("#search-btn").on("click", function() {
+	//set div transparency to 0
+	$(".starter").css("opacity", "0");
+	//after delay of 2 seconds, hide the div
+	setTimeout(function() {
+		$(".starter").hide();
+		$(".section-odd").css("opacity", "1");
+	}, 700);
+
 	// to trigger on a button click
 	document.getElementById("output").value = '"num","date","title","id","link"\n';
 	var params = {
@@ -152,7 +169,7 @@ function findTotalVids( ) {
 function fetchViddetails( i ) {
 	$.getJSON("https://www.googleapis.com/youtube/v3/videos", {
 		key: document.getElementById("accesskey").value,
-		part: "snippet,statistics",
+		part: "snippet,statistics,contentDetails,topicDetails",
 		id: vidsList[i]
 		}, function(data) {
 			
@@ -192,6 +209,8 @@ function dynamic_text(id) {
     	return contentString = Papa.unparse(accumulator, {quotes: true});
     else if (id == 'fulljson')
     	return JSON.stringify(accumulatorFull, null, 2);
+	else if (id == 'fullcsv')
+		return contentString = Papa.unparse(accumulatorFull, {quotes: true});
     else
         return document.getElementById(id).value;
     }
@@ -219,6 +238,8 @@ function download_file(name, id, mime_type) {
 	dlink.click();
 	dlink.remove();
 }
+
+;
 
 </script>
 
