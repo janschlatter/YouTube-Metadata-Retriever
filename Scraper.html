@@ -12,23 +12,22 @@
 
 <div class="starter">
 	<div class="title">
-		<h1>YouTube Metriken2go</h1>
+		<h1>YouTube Metrics2go</h1>
 	</div>
 	<div class="inputs">
 		<div class="inputbox">
-			<p>API</p><input id="accesskey" type="text" size="50" value="AIzaSyAGCQow6C8n2NHtzCrTgyhO2nNJBIm0Xwc"> | <small><a target="_blank" href="https://developers.google.com/youtube/v3/getting-started" title="What, you thought I'll let you use mine? :)">Click here to get your Access Key</a></small><br>
+			<p>API<img src="./asset/question-mark.png"></p><input id="accesskey" type="text" size="50" value="AIzaSyAGCQow6C8n2NHtzCrTgyhO2nNJBIm0Xwc">
 		</div>
 		<div class="inputbox">
-			<p>Ziel</p><input id="playlistId" type="text" size="40" value="UUT7EcU7rC44DiS3RkfZzZMg"><a target="_blank" href="https://developers.google.com/apis-explorer/#p/youtube/v3/youtube.channels.list?part=contentDetails&forUsername=arvindguptatoys&fields=items%252FcontentDetails%252CpageInfo%252FtotalResults">Click here to find playlist Id (requires username or channel id)</a></small><br>
+			<p>Ziel<img src="./asset/question-mark.png"></p><input id="playlistId" type="text" size="40" value="UUT7EcU7rC44DiS3RkfZzZMg">
 		</div>
 	</div>
 	<div class="inputs">
 		<div class="inputbox">
-			<p>Anzahl Videos</p><input id="vidslimit" type="text" value="200" size="5">
-			<a target="_blank" href="javascript:findTotalVids()">Gesamtanzahl Videos herausfinden</a>
+			<p>Anzahl Videos<img src="./asset/question-mark.png"></p><input id="vidslimit" type="text" value="200" size="5">
 		</div>
 		<div class="inputbox">
-			<p>Startpaginierung</p><input id="startToken" type="text" value="" size="40"><p></p>
+			<p>Startpaginierung<img src="./asset/question-mark.png"></p><input id="startToken" type="text" value="" size="40"><p></p>
 		</div>
 	</div>
 	<div class="go">
@@ -38,42 +37,52 @@
 
 <div class="section-odd">
 	<div class="progress">
-		<h2>Verarbeitung</h2>
+		<h2>Ergebnis der Datenabfrage</h2>
 		<p><textarea id="output" rows="16" cols="100"></textarea>
 			<div class="inputbox uncool">
 				<button onclick='download_file("vidsListing.csv", "output")'>Herunterladen</button></p>
 				</div>
 				<div class="inputbox">
-				<button onclick='download_file("vidsListing.csv", "output")'>Erweiterte Daten abrufen</button></p>
+				<button id="fullvids-btn">Erweiterte Daten abrufen</button></p>
 			</div>
 	</div>
 </div>
 
+<div class="progressbar">
+	<div class="progress">
+	</div>
+</div>
 
-<hr>
-<h3>3. Full vids info</h3>
-<small>Click this only AFTER your vids have finished loading above</small>
-<p><button id="fullvids-btn">Click to fetch detailed data of all videos</button> 
-	
-<small><font color="red">Note: This will send one API request per video. Watch your quota.</font></small></p>
-
-<p>Status: <input type="textStatus" id="status" size="50" disabled></p>
-
-<p>Note: Press the buttons below only after status shows all vids have been fetched. Else you'll only get what's been done so far.</p>
-
-<hr>
-<h3>4. Detailed data</h3>
-<small>If you want more details of each video, like views, counts, description</small>
-<p><button onclick='download_file("vidsData.json", "json")'>Download JSON</button>
-	| <button onclick='download_file("vidsData.csv", "csv")'>Download CSV</button>
-	| <button onclick='download_file("fulljson.json", "fulljson")'>Download Full JSON data from API</button>
-	| <button onclick='download_file("fullcsv.csv", "fullcsv")'>Full JSON as Excel</button></p>
-<p><small>Note: The description is escaped to HTML chars using encodeURI() function, to accommodate multiple-lines. Please use decodeURI() to decode it</small></p>
-
-<hr>
-<h3>5. Extra Info</h3>
-<p>nextPageToken's List <small>(In case you want to pick up later where you left off)</small><br>
-	<textarea id="tokensList" rows="10" cols="30"></textarea></p>
+<div class="errorMsg">
+	<p>
+		Fehler bei der Abfrage. Eingaben überprüfen und erneut versuchen.
+	</p>
+</div>
+<input type="textStatus" id="status" size="50" disabled>
+<div class="section-even">
+	<div class="progress">
+		<h2>Vollständige Daten</h2>
+			<div class="inputbox">
+				<div class="optionbox">
+					<h3>Reduzierte Version</h3>
+					<p>Beinhaltet alle Basisinformationen wie Datum, Länge, Klicks, Likes und Kommentaranzahl.</p>
+					<div class="selection">
+						<button onclick='download_file("vidsData.json", "json")'>JSON-Format</button>
+						<button onclick='download_file("vidsData.csv", "csv")'>CSV-Format</button>
+					</div>
+				</div>
+				<div class="optionbox">
+					<h3>Vollständiger Dump</h3>
+					<p>Beinhaltet alle verfügbaren Daten, wie Beschreibung, Tags, Metadaten und mehr.</p>
+					<div class="selection">
+						<button onclick='download_file("fulljson.json", "fulljson")'>JSON-Format</button>
+						<button onclick='download_file("fullcsv.csv", "fullcsv")'>CSV-Format</button>
+					</div>
+				</div>
+			</div>
+	</div>
+</div>
+<textarea id="tokensList" rows="10" cols="30"></textarea></p>
 
 <script>
 var vidsList = [];
@@ -89,6 +98,7 @@ $("#search-btn").on("click", function() {
 	//after delay of 2 seconds, hide the div
 	setTimeout(function() {
 		$(".starter").hide();
+		$(".section-odd").css("display", "unset");
 		$(".section-odd").css("opacity", "1");
 	}, 700);
 
@@ -108,9 +118,24 @@ $("#search-btn").on("click", function() {
 
 // When the Detailed data fetching button is pressed
 $("#fullvids-btn").on("click", function() {
-	accumulator = [], accumulatorFull = []; // reset
-	document.getElementById("status").value = "Fetching... "
-	fetchViddetails( 0 );
+		// hide div class section-odd
+		$(".section-odd").css("opacity", "0");
+		$(".progressbar").css("opacity", "1");
+		setTimeout(function() {
+			accumulator = [], accumulatorFull = []; // reset
+			document.getElementById("status").value = "Fetching... "
+			fetchViddetails( 0 );
+			$(".section-odd").css("display", "none");
+		}, 700);
+
+		//check after 5 seconds if the accumulator is still empty, if so, show error message
+		setTimeout(function() {
+			if (accumulator.length == 0) {
+				$(".errorMsg").css("display", "unset");
+				$(".errorMsg").css("opacity", "1");
+				$(".progressbar").css("opacity", "0");
+			}
+		}, 2000);
 });
 
 // Recursive function for cycling through the playlist, 50 videos at a time. Upon successful API call, the function gets the next list's token and calls itself again. It stops calling itself when the total videos count has been reached (to exact or immediate next multiple of 50)
@@ -191,6 +216,14 @@ function fetchViddetails( i ) {
 			}
 			accumulator.push(vidInfo);
 
+			// increase width of div progress by 1% for each video processed from 0 to 100%, then set opacity to 0
+			$(".progress").css("width", (accumulator.length / vidsList.length * 100) + "%");
+			if (accumulator.length == vidsList.length) {
+				$(".progressbar").css("opacity", "0");
+				$(".section-even").css("display", "unset");
+				$(".section-even").css("opacity", "1");
+			}
+
 			document.getElementById("status").value = "Fetched details of " + accumulator.length + " videos total";
 			if( i < vidsList.length - 1) {
 				fetchViddetails( i+1 ) //recursive : calls itself if the list isn't over.
@@ -243,17 +276,9 @@ function download_file(name, id, mime_type) {
 
 </script>
 
-<hr>
-<p>
-By <a href="mailto:nikhil.js@gmail.com">Nikhil VJ</a>. <a href="https://github.com/answerquest/answerquest.github.io/blob/master/youtube-all-vids-info.html">See the code</a>. <a href="https://www.instamojo.com/@nikhilvj/">Click to Appreciate</a>.
-</p>
-<p><small>
-	Youtube API <a href="https://developers.google.com/youtube/v3/determine_quota_cost">Quota cost calculator</a> As of Dec 2017, 
-	<br>Quota cost of Detailed data Per video : 5,
-	<br>Quota cost of each batch of 50 playlist items : 3
-	<br>See <a href="https://developers.google.com/analytics/devguides/config/mgmt/v3/limits-quotas#general_quota_limits">Limits and Quotas on API Requests</a>
-</small>
-</p>
+<!-- <footer>JavaScript Fundamentals by <a href="mailto:nikhil.js@gmail.com">Nikhil VJ</a>.
+</footer> -->
+
 
 </body>
 </html>
