@@ -11,99 +11,29 @@
 </head>
 <body>
 <div class="starter">
-	<div class="title">
-		<h1>YouTube Metadata Retriever</h1>
-		<p>Retrieve countless info about videos on YouTube: Extract comments, video length, clicks, like counts, tags, ...</p>
-	</div>
-	<div class="inputs">
-		<div class="inputbox">
-			<p>Google API Key</p><input id="accessKey" type="text" size="50" placeholder="Enter your API key here.">
+		<div class="credits">
+			<h1>
+				Credits
+			</h1>
+			<p>
+				Icons made by Freepik on flaticon.com. This project is building upon the work of <a href="https://github.com/answerquest/answerquest.github.io">AnswerQuest</a> on Github, rewriting large chunks of code and extending the functionality.
+			</p>
 		</div>
-		<div class="inputbox">
-			<p>Video / Playlist ID</p><input id="playlistId" type="text" size="40" placeholder="Only one permitted.">
-		</div>
-	</div>
-	<div class="inputs">
-		<div class="inputbox">
-			<p>Number of Videos</p><input id="vidslimit" type="text" placeholder="Stay below 200" size="5">
-		</div>
-		<div class="inputbox">
-			<p>Offset Query Start by...</p><input id="startToken" type="text" value="" size="40" placeholder="if you want to chain together queries."><p></p>
-		</div>
-	</div>
-	<!-- checkboxes for snippets and contentDetails -->
-	<div class="inputs">
-		<div class="inputbox">
-			<p>Full API-Call</p><input id="snippets" type="checkbox" checked>
-		</div>
-		<div class="inputbox">
-			<p>include Comments</p><input id="contentDetails" type="checkbox" checked>
-		</div>
-	</div>
-	<div class="go">
-		<input id="search-btn" type="button" value="Retrieve Data">
-	</div>
-</div>
-
-<div class="section-odd">
-	<div class="progress">
-		<div>
-			<h2>Google's Answer</h2>
-			<p>Check if this raw data looks like the droid you're looking for.</p>
-		</div>
-		<p><textarea id="output" rows="16" cols="100"></textarea>
-			<div class="inputbox uncool red">
-				<button onclick='window.location.reload()'>Reset</button></p>
-				</div>
+		<div class="credits">
+			<h1>Notices</h1>
+			<p>
+				This tool is for extracting data from YouTube. It is not affiliated with YouTube or Google in any way. The tool is provided as is, without any warranty. The author is not responsible for any damage caused by the use of this tool. Furthermore, the user is responsible for complying with the YouTube API Terms of Service as well as calculating the costs of using the tool. The author is not responsible for any costs incurred by the user.
+			</p>
+			<p>
+				By using this tool, you agree to the above. 
+			</p>
 			<div class="inputbox uncool">
-				<button onclick='download_file("vidsListing.csv", "output")'>Download</button></p>
-				</div>
-				<div class="inputbox">
-				<button id="fullvids-btn">Retrieve full data</button></p>
-			</div>
-	</div>
-</div>
-
-<div class="progressbar">
-	<div class="progress">
-	</div>
-</div>
-
-<div class="errorMsg">
-	<p>
-		API-Call Error. Please check your API key and input.
-	</p>
-<div class="reset-ctd">Reloading the page in 5 seconds.</div>
-</div>
-<input type="textStatus" id="status" size="50" disabled>
-<div class="section-even">
-	<div class="progress">
-		<h2>Retrieval successful.</h2>
-			<div class="inputbox">
-				<div class="optionbox">
-					<h3>Cleaned-up Version</h3>
-					<p>Contains commonly-used metadata such as title, video length, click, likes, comment count.</p>
-					<div class="selection">
-						<button onclick='download_file("vidsData.json", "json")'>JSON File</button>
-						<button onclick='download_file("vidsData.csv", "csv")'>CSV File</button>
-					</div>
-				</div>
-				<div class="optionbox">
-					<h3>Full Dump</h3>
-					<p>Contains all data retrieved from the API-Call, such as tags, video description. It's a big file.</p>
-					<div class="selection">
-						<button onclick='download_file("fulljson.json", "fulljson")'>JSON File</button>
-						<button onclick='download_file("fullcsv.csv", "fullcsv")'>CSV File</button>
-					</div>
-				</div>
+				<a href="Scraper.html"><button>Back to Home</button></a>
 			</div>
 		</div>
-	</div>
-</div>
 
-<div class="footer">
-<a class="credits-btn" href="https://github.com/janschlatter/YouTubeDataRetrieval" aria-label="View on Github"><button>GitHub Repository</button></a>
-<a class="credits-btn" href="credits.html" data-icon="octicon-repo-template" aria-label="Credits"><button>Credits</button></a>
+	</div>
+	
 </div>
 
 
@@ -145,7 +75,7 @@ $("#search-btn").on("click", function() {
 	document.getElementById("output").value = '"num","date","title","id","link"\n';
 	var params = {
 		"vidslimit" : parseInt( document.getElementById("vidslimit").value ) || 50,
-		"accessKey" : document.getElementById("accessKey").value, 
+		"accessKey" : 'AIzaSyAGCQow6C8n2NHtzCrTgyhO2nNJBIm0Xwc', 
 		"playlistId" : document.getElementById("playlistId").value
 	}
 	//document.getElementById("output").value = JSON.stringify(params, null, 2);
