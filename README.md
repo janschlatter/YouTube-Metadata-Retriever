@@ -8,4 +8,4 @@ Get your API Key directly from Google. Keep it safe. Usage is pretty much free u
 
 # Acknowledgements
 
-This tool is built upon (AnswerQuests)[https://github.com/answerquest/answerquest.github.io] code. I rewrote it and added many features.
+This tool is built upon [AnswerQuests](https://github.com/answerquest/answerquest.github.io) code. I rewrote it and added many features.
