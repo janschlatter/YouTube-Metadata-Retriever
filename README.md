@@ -8,7 +8,7 @@ Get your API Key directly from Google. Keep it safe. Usage is pretty much free u
 
 # Usage
 
-simply download the repo and run locally or head over to the [webapp](youtube-metadata.netlify.app) and run it  there.
+simply download the repo and run locally or head over to the [webapp](https://youtube-metadata.netlify.app) and run it  there.
 
 # Acknowledgements
 
